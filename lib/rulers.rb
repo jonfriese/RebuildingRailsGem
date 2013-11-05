@@ -1,5 +1,7 @@
 require "rulers/version"
 require "rulers/routing"
+require "rulers/util"
+require "rulers/dependencies"
 
 module Rulers
   class Application
@@ -10,8 +12,8 @@ module Rulers
       end
 
       if env['PATH_INFO'] == '/'
-        return [200,
-          {'Content-Type' => 'text/html'}, ["Hello world!"]]
+        return [302,
+          {'Location' => 'home/index'}, []]
       end
 
       klass, act = get_controller_and_action(env)
