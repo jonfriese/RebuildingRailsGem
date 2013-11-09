@@ -57,6 +57,31 @@ TEMPLATE
 
         FileModel.new "db/quotes/#{id}.json"
       end
+
+      def self.update(attrs)
+        return false if self.find(attrs["id"]).nil?
+        if ENV[:REQUEST_METHOD] == "POST"
+          hash = {}
+        hash["submitter"] = attrs["submitter"] || ""
+        hash["quote"] = attrs["quote"] || ""
+        hash["attribution"] = attrs["attribution"] || ""
+
+        files = Dir["db/quotes/*.json"]
+        names = files.map { |f| f.split("/")[-1] }
+        highest = names.map { |b| b[0...-5].to_i }.max
+        id = highest + 1
+
+        File.open("db/quotes/#{id}.json", "w") do |f|
+          f.write <<TEMPLATE
+{
+  "submitter": "#{hash["submitter"]}",
+  "quote": "#{hash["quote"]}",
+  "attribution": "#{hash["attribution"]}"
+}
+TEMPLATE
+          end
+        end
+      end
     end
   end
 end
